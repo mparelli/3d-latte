@@ -1,12 +1,497 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>3D-LATTE</title>
-  </head>
-  <body>
-    <p>Coming soon!</p>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="3D-LATTE performs 3D Editing from text instructions.">
+  <meta name="keywords" content="3D Editing, 3D-LATTE">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D-LATTE: Latent Space 3D Editing from Textual Instructions</title>
 
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script defer src="./static/js/bulma-carousel.min.js"></script>
+  <script defer src="./static/js/bulma-slider.min.js"></script>
+
+  <!-- Minimal, safe carousel init (keeps your ./static/js/index.js too) -->
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.bulmaCarousel) {
+        bulmaCarousel.attach('#examples-carousel', {
+          slidesToScroll: 1,
+          slidesToShow: 2,
+          loop: true,
+          breakpoints: [
+            { changePoint: 768, slidesToShow: 1, slidesToScroll: 1 } // <768px: 1 slide
+          ]
+        });
+
+      }
+
+      // Bulma navbar burger toggle (optional; safe even if no menu)
+      const burgers = Array.from(document.querySelectorAll('.navbar-burger'));
+      burgers.forEach(el => {
+        el.addEventListener('click', () => {
+          const targetId = el.dataset.target;
+          if (!targetId) return;
+          const target = document.getElementById(targetId);
+          el.classList.toggle('is-active');
+          if (target) target.classList.toggle('is-active');
+        });
+      });
+    });
+  </script>
+
+  <!-- Keep your existing index.js (can remove if redundant) -->
+  <script defer src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <!-- Optional menu (empty but valid). Remove if you don’t want it. -->
+  <div id="navbarMenu" class="navbar-menu"></div>
+</nav>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            3D-LATTE: Latent Space 3D Editing<br>from Textual Instructions
+          </h1>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://mparelli.github.io/">Maria Parelli</a><sup>1</sup>&nbsp;&nbsp;
+            </span>
+            <span class="author-block">
+              <a href="https://moechsle.github.io/">Michael Oechsle</a><sup>2</sup>&nbsp;&nbsp;
+            </span>
+            <span class="author-block">
+              <a href="https://m-niemeyer.github.io/">Michael Niemeyer</a><sup>2</sup>&nbsp;&nbsp;
+            </span>
+            <span class="author-block">
+              <a href="https://federicotombari.github.io/">Federico Tombari</a><sup>2</sup>&nbsp;&nbsp;
+            </span>
+            <span class="author-block">
+              <a href="https://www.cvlibs.net/">Andreas Geiger</a><sup>1</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>University of Tübingen</span>&nbsp;&nbsp;
+            <span class="author-block"><sup>2</sup>Google Zürich</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2509.00269" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2509.00269" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                <a href="https://mparelli.github.io/3d-latte" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code (coming soon)</span>
+                </a>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container" style="max-width: 1300px;">
+    <div class="hero-body">
+      <img src="./static/images/teaser_website.png" id="teaser" style="width:100%; height:auto;" alt="Teaser image">
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">3D-LATTE</span> performs text-driven 3D editing in the latent space of a 3D diffusion model, <br>delivering precise, high-quality and 3D consistent edits.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-light is-small" id="results">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3">3D Editing Results</h2>
+
+      <div id="examples-carousel" class="carousel examples-carousel">
+
+        <!-- Example 1 -->
+        <div class="item is-active">
+          <div class="edit-example">
+            <div class="edit-slot">
+              <div class="slot-row">
+                <div class="slot-col">
+                  <div class="slot-label">Original</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_original_teddy_2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A teddy bear wearing a white shirt</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_clown_teddy_2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A teddy bear wearing a clown dress</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_tux_teddy_2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A teddy bear wearing a tuxedo</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 2 -->
+        <div class="item">
+          <div class="edit-example">
+            <div class="edit-slot">
+              <div class="slot-row">
+                <div class="slot-col">
+                  <div class="slot-label">Original</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_original_spiti2trees.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A house with pink trees</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_ancient_best.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A Greek ancient building with pink trees</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_future.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A futuristic modern house with pink trees</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 3 -->
+        <div class="item">
+          <div class="edit-example">
+            <div class="edit-slot">
+              <div class="slot-row">
+                <div class="slot-col">
+                  <div class="slot-label">Original</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_original_purpleflowers.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A pot with purple flowers</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_sunflowers.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A pot with sunflowers</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_pot_china.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A white-and-blue porcelain pot with purple flowers</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 4 -->
+        <div class="item">
+          <div class="edit-example">
+            <div class="edit-slot">
+              <div class="slot-row">
+                <div class="slot-col">
+                  <div class="slot-label">Original</div>
+                  <img src="./static/videos/palm_original_ours.gif" class="slot-video" alt="Palm tree on sea">
+                  <div class="slot-desc">A palm tree on the sea</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <img src="./static/videos/palm_pink_white.gif" class="slot-video" alt="Palm tree on pink cloud">
+                  <div class="slot-desc">A palm tree on a pink cloud</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <img src="./static/videos/woodenpot_white.gif" class="slot-video" alt="Palm tree in wooden pot">
+                  <div class="slot-desc">A palm tree on a wooden pot with a base</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 5 -->
+        <div class="item">
+          <div class="edit-example">
+            <div class="edit-slot">
+              <div class="slot-row">
+                <div class="slot-col">
+                  <div class="slot-label">Original</div>
+                  <img src="./static/videos/dog.gif" class="slot-video" alt="Dog">
+                  <div class="slot-desc">A dog</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <img src="./static/videos/sunglasses.gif" class="slot-video" alt="Dog with sunglasses">
+                  <div class="slot-desc">A dog with sunglasses</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <img src="./static/videos/dog_santa.gif" class="slot-video" alt="Dog with Santa hat">
+                  <div class="slot-desc">A dog with a Santa hat</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 6 -->
+        <div class="item">
+          <div class="edit-example">
+            <div class="edit-slot">
+              <div class="slot-row">
+                <div class="slot-col">
+                  <div class="slot-label">Original</div>
+                  <img src="./static/videos/original_warrior_new.gif" class="slot-video" alt="Warrior with shovel">
+                  <div class="slot-desc">A warrior holding a shovel</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <img src="./static/videos/shovel_lamp.gif" class="slot-video" alt="Warrior with lamp">
+                  <div class="slot-desc">A warrior holding a lamp</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <img src="./static/videos/warrior_daisywhite.gif" class="slot-video" alt="Warrior with daisy">
+                  <div class="slot-desc">A warrior holding a white daisy</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example 7 -->
+        <div class="item">
+          <div class="edit-example">
+            <div class="edit-slot">
+              <div class="slot-row">
+                <div class="slot-col">
+                  <div class="slot-label">Original</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_original_wings_2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A character with wings</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_angel.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A character with angel wings</div>
+                </div>
+
+                <div class="slot-col">
+                  <div class="slot-label">Edit</div>
+                  <video autoplay loop muted playsinline preload="metadata" class="slot-video">
+                    <source src="./static/videos/360_jetpack.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="slot-desc">A character with a red jetpack</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /#examples-carousel -->
+
+    </div><!-- /.container -->
+  </div><!-- /.hero-body -->
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Despite the recent success of multi-view diffusion models for text/image-based 3D asset generation, instruction-based editing of 3D assets lags surprisingly far behind the quality of generation models. The main reason is that recent approaches using 2D priors suffer from view-inconsistent editing signals.
+          </p>
+          <p>
+            Going beyond 2D prior distillation methods and multi-view editing strategies, we propose a training-free editing method that operates within the latent space of a native 3D diffusion model, allowing us to directly manipulate 3D geometry. We guide the edit synthesis by blending 3D attention maps from the generation with the source object. Coupled with geometry-aware regularization guidance, a spectral modulation strategy in the Fourier domain and a refinement step for 3D enhancement, our method outperforms previous 3D editing methods enabling high-fidelity and precise edits across a wide range of shapes and semantic manipulations.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Method Overview</h2>
+        <img src="./static/images/method_fig_cvpr_2.png" alt="Architecture">
+        <p>
+          We operate in the latent space of a pre-trained 3D generative model. The source 3D object is represented as a multi-view Gaussian splat grid and inverted into its corresponding noise latent. Starting from this latent, we perform denoising guided by the edit prompt, while injecting 3D cross- and self-attention maps derived from the source object. A geometry regularization guidance term, a frequency modulation strategy and a 3D enhancement module further refine the result. Region-specific edits are supported via masks generated using GroundingDINO and SAM2.
+        </p>
+      </div>
+    </div>
+
+    <br><br>
+
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="content">
+          <h2 class="title is-3">3D self-attention</h2>
+          <p>
+            The spectral decomposition of the 3D self-attention graph reflects 3D scene composition and groups 3D Gaussians into distinct semantic parts.
+          </p>
+          <img id="selfattention" src="./static/images/self_attention_viz.jpg" alt="Self-attention visualization">
+        </div>
+      </div>
+
+      <div class="column">
+        <h2 class="title is-3">3D cross-attention</h2>
+        <div class="columns is-centered">
+          <div class="column content">
+            <p>
+              3D cross-attention weights define a token–3D Gaussian splat correspondence field, enabling accurate 3D localization of edit regions.
+            </p>
+            <img id="crossattention" src="./static/images/cross_attention_viz.jpg" alt="Cross-attention visualization">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br><br><br>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Qualitative comparisons</h2>
+        <img id="comp" src="./static/images/qual_comp.jpg" style="width:100%; height:auto;" alt="Qualitative comparisons">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{parelli2025latte,
+  title   = {3D-LATTE: Latent Space 3D Editing from Textual Instructions},
+  author  = {Parelli, Maria and Oechsle, Michael and Niemeyer, Michael and Tombari, Federico and Geiger, Andreas},
+  journal = {arXiv preprint arXiv:2509.00269},
+  year    = {2025}
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="./static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/keunhong" class="external-link" aria-disabled="true">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+              Creative Commons Attribution-ShareAlike 4.0 International License
+            </a>.
+          </p>
+          <p>
+            The source code of the website is borrowed from
+            <a rel="here" href="https://nerfies.github.io/">
+              here
+            </a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

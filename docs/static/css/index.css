@@ -1,0 +1,221 @@
+/* index.css */
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.footer .icon-link {
+  font-size: 25px;
+  color: #000;
+}
+
+.link-block a {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+.teaser .hero-body {
+  padding-top: 0;
+  padding-bottom: 3rem;
+}
+
+.teaser {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-title {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-authors {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-venue {
+  color: #555;
+  width: fit-content;
+  font-weight: bold;
+}
+
+.publication-awards {
+  color: #ff3860;
+  width: fit-content;
+  font-weight: bolder;
+}
+
+.publication-authors a {
+  color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+  text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+/* ---------- Carousel + layout ---------- */
+
+/* Ensure the section background is white even though it is 'hero is-light' */
+#results.hero.is-light,
+#results.hero.is-light .hero-body {
+  background: #fff !important;
+}
+
+/* bulma-carousel wrappers that can show gray */
+#examples-carousel,
+#examples-carousel .carousel-container,
+#examples-carousel .carousel-content,
+#examples-carousel .carousel-items,
+#examples-carousel .carousel-item {
+  background: #fff !important;
+}
+
+.examples-carousel {
+  overflow: hidden;
+  background: #fff !important;
+}
+
+/* Cards */
+.examples-carousel .item {
+  margin: 5px;
+  overflow: hidden;
+  background: #fff !important;
+  border: 2px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 3-column block */
+.edit-slot {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.slot-row {
+  display: flex;
+  justify-content: center;
+  gap: 0px;
+  margin-top: 10px;
+}
+
+.slot-col {
+  text-align: center;
+  padding: 0.25rem 0.5rem 0.75rem;
+  background: #fff;
+}
+
+/* Media sizing (consistent card height so no gray gaps) */
+.examples-carousel .slot-video {
+  width: 256px !important;
+  height: 256px !important;
+  object-fit: cover;
+  border-radius: 0;
+  display: block;
+}
+
+/* ---------- Improved typography for carousel text ---------- */
+
+#examples-carousel {
+  color: #222;
+}
+
+#examples-carousel .slot-label {
+  font-size: 0.72rem;          /* slightly smaller */
+  font-weight: 600;
+  letter-spacing: 0.06em;      /* cleaner spacing */
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  color: #777;                 /* softer than #666 */
+}
+
+#examples-carousel .slot-desc {
+  margin-top: 8px;
+  font-size: 0.92rem;          /* tiny bump for readability */
+  line-height: 1.4;            /* a bit more breathing room */
+  color: #333;
+  max-width: 240px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'Google Sans', 'Noto Sans', sans-serif; /* nicer caption feel */
+}
+
+/* ---------- Optional: keep legacy results-carousel styles if you use it elsewhere ---------- */
+
+.results-carousel {
+  overflow: hidden;
+}
+
+.results-carousel .item {
+  margin: 5px;
+  overflow: hidden;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  padding: 0;
+  font-size: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.results-carousel video {
+  margin: 0;
+  width: 120px !important;
+  height: auto !important;
+  border-radius: 8px;
+}
+
+/* ---------- Misc panels ---------- */
+
+.interpolation-panel {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.interpolation-panel .interpolation-image {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.interpolation-panel .slider {
+  margin: 0 !important;
+}
+
+#interpolation-image-wrapper {
+  width: 100%;
+}
+
+#interpolation-image-wrapper img {
+  border-radius: 5px;
+}
+
+
+/* Container for the dots */
+#examples-carousel .carousel-pagination {
+  margin-top: 1rem;
+}
+
+/* Base dot style */
+#examples-carousel .carousel-pagination-bullet {
+  width: 15px;
+  height: 15px;
+  margin: 0 6px;
+  background: #cfcfcf;     /* light gray */
+  opacity: 1;
+  border-radius: 50%;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+/* Active dot */
+#examples-carousel .carousel-pagination-bullet.is-active {
+  background: #333;        /* dark, obvious */
+  transform: scale(1.25);
+}
